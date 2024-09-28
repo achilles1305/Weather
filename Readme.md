@@ -49,16 +49,16 @@ python manage.py runserver
 ## Pages Overview
 
 ### 1. Home Page
-![Home Page](Preview/HomePage.png)
+![Home Page](Preview/HomePage.jpeg)
 
 ### 2. Weather by Map
-![Weather by Map](Preview/MapPage.png)
+![Weather by Map](Preview/MapPage.jpeg)
 
 ### 3. Weather by Dropdown Selection
-![Weather by Dropdown](Preview/DropdownPage.png)
+![Weather by Dropdown](Preview/DropdownPage.jpeg)
 
 ### 4. Weather by City Name
-![Weather by City Name](Preview/CityInputPage.png)
+![Weather by City Name](Preview/CityInputPage.jpeg)
 
 ## Usage
 
