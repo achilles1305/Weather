@@ -17,29 +17,29 @@ This is a Django-based weather application that allows users to get weather info
 
 Follow these steps to set up and run the application:
 
-### 1. Create a Virtual Environment
+1. **Create a Virtual Environment**
 
 ```bash
 python -m venv myenv
 ```
 
-### 2. Activate the Virtual Environment
+2. **Activate the Virtual Environment**
 
 ```bash
 myenv\Scripts\activate
 ```
 
-### 3. Install Required Packages
+3. **Install Required Packages**
 
 ```bash
 pip install django leaflet requests
 ```
 
-### 4. Set Up OpenWeatherMap API
+4. **Set Up OpenWeatherMap API**
     - Sign up at OpenWeatherMap to get your API key.
     - Add your API key to views.py
 
-### 5. Run the Application
+5. **Run the Application**
 
 ```bash
 python manage.py migrate
