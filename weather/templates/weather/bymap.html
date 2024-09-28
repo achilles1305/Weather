@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Map</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Leaflet CSS for the map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <style>
+        body {
+            background: linear-gradient(to right, #000855, #125c00);
+            color: white;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            margin-top: 30px;
+            color: #f8f9fa;
+        }
+
+        #map {
+            height: 750px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: cell;
+        }
+
+        .map-container {
+            margin: 50px auto;
+            padding: 2px;
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 15px;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        /* Loading Spinner Styles */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        /* Popup Styles */
+        .popup-content {
+            border-radius: 15px;
+            padding: 5px;
+            text-align: center;
+            color: #333;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #00aaff;
+        }
+
+        .navbar-nav .nav-link {
+            color: #b3b3b3;
+            font-size: 1.1rem;
+            padding: 8px 20px;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: #00aaff;
+            background-color: rgba(0, 170, 255, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand mx-auto" href="{% url 'home' %}" style="font-size: 1.6rem; font-weight: 700;">
+                Weather App
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'by_city' %}">By City</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'by_map' %}">By Map</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container text-center map-container">
+        <h1>Click on the Map to Get Weather Information</h1>
+        <div id="map"></div>
+        <div class="loading-spinner">
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading weather data...</span>
+            </div>
+        </div>
+        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        var map = L.map('map').setView([13.0827, 80.2707], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            $('.loading-spinner').show();
+
+            $.get('/get_weather/', { lat: lat, lon: lon }, function(data) {
+                $('.loading-spinner').hide();
+
+                var popupContent = '<div class="popup-content">' +
+                                   '<h5>Weather Information</h5>' +
+                                   '<p>Description: ' + data.description + '</p>' +
+                                   '<p>Temperature: ' + data.temperature + '°C</p>' +
+                                   '</div>';
+                L.popup()
+                 .setLatLng(e.latlng)
+                 .setContent(popupContent)
+                 .openOn(map);
+            }).fail(function() {
+                $('.loading-spinner').hide();
+                $('#error-message').text('Error fetching weather data. Please try again.').show();
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
